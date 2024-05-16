@@ -2,8 +2,6 @@
 
 ### 接收 socket
 
-https://course.rs/advance-practice/spawning.html#%E6%8E%A5%E6%94%B6-sockets
-
 现在运行我们的简单服务器 :
 
 ```bash
@@ -44,4 +42,43 @@ redis-cli
 redis-cli
 127.0.0.1:6379> get hello
 "world"
+```
+
+## 6.5 消息传递
+
+首先，将之前实现的 `src/main.rs` 文件中的服务器端代码放入到一个 `bin` 文件中，等下可以直接通过该文件来运行我们的服务器:
+
+```bash
+mkdir src/bin
+mv src/main.rs src/bin/server.rs
+```
+
+接着创建一个新的 `bin` 文件，用于包含我们即将实现的客户端代码:
+
+```bash
+touch src/bin/client.rs
+```
+
+完成本章的代码后启动 redis 服务器。
+
+```bash
+cargo run --bin server
+```
+
+可以先用 redis 客户端往服务器中写入一条数据。
+
+```bash
+redis-cli
+127.0.0.1:6379> set hello world
+OK
+```
+
+然后启动 redis 客户端，客户端有两个发送者 tx 和 tx2，分别发送 get 和 set 任务。有个 manager 任务，负责接收这些任务并将其发送到服务器端。两个发送任务中分别传递 oneshot 的 resp_tx 发送端，manager 任务在和 redis 服务器完成交互后，会将结果返回给这些 resp_rx。 
+
+
+```bash
+cargo run --bin client
+
+GOT = Ok(Ok(Some(b"world"))) # get 返回获取的值
+GOT = Ok(Ok(())) # set 返回 OK
 ```
