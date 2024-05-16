@@ -17,3 +17,12 @@ cargo run --example hello-redis
 ```
 
 此时，客户端的输出是: `Error: "unimplemented"`, 同时服务器端打印出了客户端发来的由 redis 命令和数据组成的数据帧: `GOT: Array([Bulk(b"set"), Bulk(b"hello"), Bulk(b"world")])`。
+
+### 使用 HashMap 存储数据
+
+使用 `cargo run` 运行服务器，然后再打开另一个终端窗口，运行 hello-redis 客户端示例: `cargo run --example hello-redis`。
+
+Bingo，在看了这么多原理后，我们终于迈出了小小的第一步，并获取到了存在 HashMap 中的值: `从服务器端获取到结果=Some(b"world")`。
+
+**但是问题又来了：这些值无法在 TCP 连接中共享，如果另外一个用户连接上来并试图同时获取 hello 这个 key，他将一无所获。**
+
