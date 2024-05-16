@@ -26,3 +26,22 @@ Bingo，在看了这么多原理后，我们终于迈出了小小的第一步，
 
 **但是问题又来了：这些值无法在 TCP 连接中共享，如果另外一个用户连接上来并试图同时获取 hello 这个 key，他将一无所获。**
 
+例如我另外打开一个终端窗口，使用 redis-cli 直接去获取 hello 这个 key，将返回 nil。
+
+```bash
+redis-cli
+127.0.0.1:6379> get hello
+(nil)
+```
+
+## 6.4 共享状态
+
+使用 `cargo run` 运行服务器，然后再打开另一个终端窗口，运行 hello-redis 客户端示例: `cargo run --example hello-redis`。
+
+这次，在另一个终端窗口中再次使用 redis-cli 去获取 hello 这个 key，将返回正确的结果。
+
+```bash
+redis-cli
+127.0.0.1:6379> get hello
+"world"
+```
